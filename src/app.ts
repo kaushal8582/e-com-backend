@@ -12,10 +12,10 @@ import paymentRoutes from './routes/paymentRoutes.js';
 
 const app = express();
 
-const corsOrigins = (process.env.CORS_ORIGINS || 'http://localhost:3000,http://localhost:3002,https://e-com-backend-u8vl.onrender.com').split(',').map((o) => o.trim());
+// Allow all origins so API is accessible from anywhere
 app.use(
   cors({
-    origin: corsOrigins,
+    origin: true, // reflect request origin — allows any domain
     credentials: true,
   })
 );
