@@ -29,7 +29,11 @@ export function createRazorpayOrder(
       receipt,
       notes: { orderId: receipt },
     })
-    .then((order: { id: string; amount: number; currency: string }) => order);
+    .then((order: { id: string; amount: string | number; currency: string }) => ({
+      id: order.id,
+      amount: Number(order.amount),
+      currency: order.currency,
+    }));
 }
 
 export function verifyRazorpaySignature(

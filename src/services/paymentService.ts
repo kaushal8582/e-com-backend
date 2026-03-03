@@ -22,6 +22,7 @@ export async function createRazorpayOrderForOrder(orderId: string, userId: strin
     'INR'
   );
   await orderRepo.updateOrderPayment(orderId, {
+    paymentStatus: 'PENDING',
     razorpayOrderId: razorpayOrder.id,
   });
   return {
