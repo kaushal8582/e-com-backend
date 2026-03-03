@@ -34,6 +34,7 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.listProducts = listProducts;
+exports.getProductById = getProductById;
 exports.createProduct = createProduct;
 exports.updateProduct = updateProduct;
 exports.deleteProduct = deleteProduct;
@@ -42,6 +43,15 @@ async function listProducts(req, res) {
     const { limit, skip, search, category } = req.query;
     const { products, total } = await productService.listAdmin({ limit, skip, search, category });
     res.json({ success: true, data: { products, total } });
+}
+async function getProductById(req, res) {
+    const id = req.params.id;
+    const product = await productService.getById(id);
+    if (!product) {
+        res.status(404).json({ success: false, message: 'Product not found' });
+        return;
+    }
+    res.json({ success: true, data: product });
 }
 async function createProduct(req, res) {
     const product = await productService.createProduct(req.body);

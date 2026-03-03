@@ -1,4 +1,5 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
+export declare function uploadImage(req: Request, res: Response): Promise<void>;
 export declare function getCloudinarySignature(req: {
     query: {
         folder?: string;

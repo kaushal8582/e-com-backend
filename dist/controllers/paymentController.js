@@ -1,22 +1,66 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createPaymentIntent = createPaymentIntent;
+exports.createRazorpayOrder = createRazorpayOrder;
 exports.verifyPayment = verifyPayment;
-/**
- * Payment-ready placeholder. Integrate Stripe/Razorpay etc. later.
- * Flow: create order → createPaymentIntent(orderId) → client pays → verifyPayment(payload) → update order.
- */
-async function createPaymentIntent(req, res) {
-    res.status(501).json({
-        success: false,
-        message: 'Payment not integrated yet. Use this endpoint later to create a payment intent for the order.',
-        placeholder: { orderId: req.params?.orderId },
-    });
+const paymentService = __importStar(require("../services/paymentService.js"));
+async function createRazorpayOrder(req, res) {
+    try {
+        const userId = req.tokenPayload?.userId;
+        if (!userId) {
+            res.status(401).json({ success: false, message: 'Not authenticated' });
+            return;
+        }
+        const { orderId } = req.body;
+        const data = await paymentService.createRazorpayOrderForOrder(orderId, userId);
+        res.json({ success: true, data });
+    }
+    catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to create payment order';
+        res.status(400).json({ success: false, message });
+    }
 }
 async function verifyPayment(req, res) {
-    res.status(501).json({
-        success: false,
-        message: 'Payment verification not integrated yet. Use this endpoint after payment to verify and update order.',
-        placeholder: { payload: req.body },
-    });
+    try {
+        const body = req.body;
+        const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = body;
+        const order = await paymentService.verifyAndCompletePayment(razorpay_payment_id, razorpay_order_id, razorpay_signature);
+        res.json({ success: true, message: 'Payment verified', data: { orderId: order?._id?.toString() } });
+    }
+    catch (err) {
+        const message = err instanceof Error ? err.message : 'Payment verification failed';
+        res.status(400).json({ success: false, message });
+    }
 }

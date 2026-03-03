@@ -6,6 +6,8 @@ exports.findOrderById = findOrderById;
 exports.findOrderByIdAndUserId = findOrderByIdAndUserId;
 exports.listAdminOrders = listAdminOrders;
 exports.updateOrderStatus = updateOrderStatus;
+exports.findOrderByRazorpayOrderId = findOrderByRazorpayOrderId;
+exports.updateOrderPayment = updateOrderPayment;
 const Order_js_1 = require("../models/Order.js");
 const mongoose_1 = require("mongoose");
 async function createOrder(data) {
@@ -34,4 +36,10 @@ async function listAdminOrders(params) {
 }
 async function updateOrderStatus(id, status) {
     return Order_js_1.Order.findByIdAndUpdate(id, { $set: { status } }, { new: true }).exec();
+}
+async function findOrderByRazorpayOrderId(razorpayOrderId) {
+    return Order_js_1.Order.findOne({ razorpayOrderId }).exec();
+}
+async function updateOrderPayment(orderId, data) {
+    return Order_js_1.Order.findByIdAndUpdate(orderId, { $set: data }, { new: true }).exec();
 }

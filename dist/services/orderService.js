@@ -63,6 +63,8 @@ async function createOrder(userId, address) {
             titleSnapshot: product.title,
             priceSnapshot: price,
             qty: item.qty,
+            imageSnapshot: product.images?.[0]?.url,
+            slugSnapshot: product.slug,
         });
         totalAmount += price * item.qty;
     }

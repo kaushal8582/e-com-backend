@@ -33,9 +33,52 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.uploadImage = uploadImage;
 exports.getCloudinarySignature = getCloudinarySignature;
 exports.deleteCloudinaryImage = deleteCloudinaryImage;
 const uploadService = __importStar(require("../services/uploadService.js"));
+async function uploadImage(req, res) {
+    try {
+        const file = req.file;
+        if (!file?.path) {
+            res.status(400).json({ success: false, message: 'No file uploaded' });
+            return;
+        }
+        const result = await uploadService.uploadOnCloudinary(file.path);
+        res.json({ success: true, data: { url: result.url, publicId: result.publicId } });
+    }
+    catch (err) {
+        const message = toErrorMessage(err);
+        const status = message.includes('not configured') ? 503 : 500;
+        res.status(status).json({ success: false, message });
+    }
+}
+function toErrorMessage(err) {
+    if (err instanceof Error) {
+        const msg = err.message;
+        if (typeof msg === 'string' && msg !== '[object Object]')
+            return msg;
+    }
+    if (err && typeof err === 'object') {
+        const o = err;
+        if (typeof o.message === 'string')
+            return o.message;
+        if (typeof o.error === 'string')
+            return o.error;
+        if (o.error && typeof o.error.message === 'string') {
+            return o.error.message;
+        }
+        try {
+            const s = JSON.stringify(o);
+            if (s !== '{}')
+                return s;
+        }
+        catch {
+            // ignore
+        }
+    }
+    return typeof err === 'string' ? err : 'Upload failed';
+}
 async function getCloudinarySignature(req, res) {
     try {
         const folder = req.query.folder || 'ecommerce';

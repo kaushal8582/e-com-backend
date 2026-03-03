@@ -13,3 +13,10 @@ export declare function listAdminOrders(params: ListOrdersParams): Promise<{
     total: number;
 }>;
 export declare function updateOrderStatus(id: string, status: IOrder['status']): Promise<IOrder | null>;
+export declare function findOrderByRazorpayOrderId(razorpayOrderId: string): Promise<IOrder | null>;
+export declare function updateOrderPayment(orderId: string, data: {
+    paymentStatus: IOrder['paymentStatus'];
+    paymentId?: string;
+    paymentProvider?: string;
+    razorpayOrderId?: string;
+}): Promise<IOrder | null>;

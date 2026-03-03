@@ -4,6 +4,8 @@ export interface IOrderItem {
     titleSnapshot: string;
     priceSnapshot: number;
     qty: number;
+    imageSnapshot?: string;
+    slugSnapshot?: string;
 }
 export interface IOrderAddress {
     name: string;
@@ -24,6 +26,7 @@ export interface IOrder extends Document {
     paymentStatus: PaymentStatus;
     paymentProvider?: string;
     paymentId?: string;
+    razorpayOrderId?: string;
     createdAt: Date;
 }
 export declare const Order: Model<IOrder>;

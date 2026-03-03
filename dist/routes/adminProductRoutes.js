@@ -41,6 +41,7 @@ const productValidators_js_1 = require("../validators/productValidators.js");
 const router = (0, express_1.Router)();
 router.use(auth_js_1.authRequired, auth_js_1.adminOnly);
 router.get('/', (0, validate_js_1.validateQuery)(productValidators_js_1.productsQuerySchema), adminProductController.listProducts);
+router.get('/:id', (0, validate_js_1.validateParams)(productValidators_js_1.productIdParamSchema), adminProductController.getProductById);
 router.post('/', (0, validate_js_1.validateBody)(productValidators_js_1.createProductSchema), adminProductController.createProduct);
 router.patch('/:id', (0, validate_js_1.validateParams)(productValidators_js_1.productIdParamSchema), (0, validate_js_1.validateBody)(productValidators_js_1.updateProductSchema), adminProductController.updateProduct);
 router.delete('/:id', (0, validate_js_1.validateParams)(productValidators_js_1.productIdParamSchema), adminProductController.deleteProduct);

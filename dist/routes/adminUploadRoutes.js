@@ -38,7 +38,9 @@ const uploadController = __importStar(require("../controllers/uploadController.j
 const auth_js_1 = require("../middleware/auth.js");
 const validate_js_1 = require("../middleware/validate.js");
 const uploadValidators_js_1 = require("../validators/uploadValidators.js");
+const multer_js_1 = require("../config/multer.js");
 const router = (0, express_1.Router)();
 router.use(auth_js_1.authRequired, auth_js_1.adminOnly);
+router.post('/image', multer_js_1.upload.single('image'), uploadController.uploadImage);
 router.delete('/cloudinary/:publicId', (0, validate_js_1.validateParams)(uploadValidators_js_1.deleteImageParamSchema), uploadController.deleteCloudinaryImage);
 exports.default = router;

@@ -40,6 +40,8 @@ const orderItemSchema = new mongoose_1.Schema({
     titleSnapshot: { type: String, required: true },
     priceSnapshot: { type: Number, required: true, min: 0 },
     qty: { type: Number, required: true, min: 1 },
+    imageSnapshot: { type: String },
+    slugSnapshot: { type: String },
 }, { _id: false });
 const orderAddressSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
@@ -58,6 +60,7 @@ const orderSchema = new mongoose_1.Schema({
     paymentStatus: { type: String, enum: ['PENDING', 'PAID', 'FAILED', 'SIMULATED'], default: 'PENDING' },
     paymentProvider: { type: String },
     paymentId: { type: String },
+    razorpayOrderId: { type: String },
     createdAt: { type: Date, default: Date.now },
 }, { timestamps: false, versionKey: false });
 orderSchema.index({ userId: 1 });

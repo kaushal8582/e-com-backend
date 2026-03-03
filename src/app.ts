@@ -12,11 +12,20 @@ import paymentRoutes from './routes/paymentRoutes.js';
 
 const app = express();
 
-// Allow all origins so API is accessible from anywhere
+// CORS: allow frontend origin(s). Use CORS_ORIGINS env for a list, or allow any origin if unset.
+const corsOriginsEnv = process.env.CORS_ORIGINS?.trim();
+const corsOriginList = corsOriginsEnv
+  ? corsOriginsEnv.split(',').map((o) => o.trim()).filter(Boolean)
+  : null;
+
 app.use(
   cors({
-    origin: true, // reflect request origin — allows any domain
+    origin: corsOriginList && corsOriginList.length > 0
+      ? corsOriginList
+      : true, // allow any origin when CORS_ORIGINS not set (e.g. public API)
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
