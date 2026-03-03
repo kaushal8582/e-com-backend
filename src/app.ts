@@ -20,9 +20,7 @@ const corsOriginList = corsOriginsEnv
 
 app.use(
   cors({
-    origin: corsOriginList && corsOriginList.length > 0
-      ? corsOriginList
-      : true, // allow any origin when CORS_ORIGINS not set (e.g. public API)
+    origin: true, // allow any origin when CORS_ORIGINS not set (e.g. public API)
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
