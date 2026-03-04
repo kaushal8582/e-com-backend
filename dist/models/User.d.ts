@@ -6,5 +6,8 @@ export interface IUser extends Document {
     passwordHash: string;
     role: UserRole;
     createdAt: Date;
+    googleId?: string;
+    resetToken?: string;
+    resetTokenExpiry?: Date;
 }
 export declare const User: Model<IUser>;

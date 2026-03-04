@@ -36,7 +36,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.createRazorpayOrderForOrder = createRazorpayOrderForOrder;
 exports.verifyAndCompletePayment = verifyAndCompletePayment;
 const orderRepo = __importStar(require("../repositories/orderRepository.js"));
+const userRepo = __importStar(require("../repositories/userRepository.js"));
 const razorpayClient_js_1 = require("../utils/razorpayClient.js");
+const emailLib = __importStar(require("../lib/email.js"));
 async function createRazorpayOrderForOrder(orderId, userId) {
     const order = await orderRepo.findOrderByIdAndUserId(orderId, userId);
     if (!order)
@@ -79,5 +81,11 @@ async function verifyAndCompletePayment(razorpayPaymentId, razorpayOrderId, sign
         paymentId: razorpayPaymentId,
         paymentProvider: 'razorpay',
     });
+    if (updated) {
+        const user = await userRepo.findById(updated.userId.toString());
+        if (user?.email) {
+            emailLib.sendOrderConfirmation(updated, user.email).catch(() => { });
+        }
+    }
     return updated;
 }

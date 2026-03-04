@@ -1,5 +1,7 @@
 import * as orderRepo from '../repositories/orderRepository.js';
+import * as userRepo from '../repositories/userRepository.js';
 import { createRazorpayOrder, verifyRazorpaySignature, getRazorpayKeyId } from '../utils/razorpayClient.js';
+import * as emailLib from '../lib/email.js';
 import { Types } from 'mongoose';
 
 export async function createRazorpayOrderForOrder(orderId: string, userId: string) {
@@ -50,5 +52,11 @@ export async function verifyAndCompletePayment(
     paymentId: razorpayPaymentId,
     paymentProvider: 'razorpay',
   });
+  if (updated) {
+    const user = await userRepo.findById(updated.userId.toString());
+    if (user?.email) {
+      emailLib.sendOrderConfirmation(updated, user.email).catch(() => {});
+    }
+  }
   return updated;
 }

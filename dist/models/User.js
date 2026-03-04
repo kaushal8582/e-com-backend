@@ -41,5 +41,8 @@ const userSchema = new mongoose_1.Schema({
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
     createdAt: { type: Date, default: Date.now },
+    googleId: { type: String, sparse: true },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
 }, { timestamps: false, versionKey: false });
 exports.User = mongoose_1.default.model('User', userSchema);

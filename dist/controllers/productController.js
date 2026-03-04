@@ -42,8 +42,12 @@ async function listProducts(req, res) {
     res.json({ success: true, data: { products, total } });
 }
 async function getBySlug(req, res) {
-    const product = await productService.getBySlug(req.params.slug);
-    if (!product) {
+    const param = req.params.slug;
+    const isMongoId = /^[a-f\d]{24}$/i.test(param);
+    const product = isMongoId
+        ? await productService.getById(param)
+        : await productService.getBySlug(param);
+    if (!product || product.isDeleted || !product.isActive) {
         res.status(404).json({ success: false, message: 'Product not found' });
         return;
     }

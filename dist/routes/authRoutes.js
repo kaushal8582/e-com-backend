@@ -43,4 +43,7 @@ router.post('/register', (0, validate_js_1.validateBody)(authValidators_js_1.reg
 router.post('/login', (0, validate_js_1.validateBody)(authValidators_js_1.loginSchema), authController.login);
 router.post('/logout', authController.logout);
 router.get('/me', auth_js_1.authRequired, authController.me);
+router.post('/forgot-password', (0, validate_js_1.validateBody)(authValidators_js_1.forgotPasswordSchema), authController.forgotPassword);
+router.post('/reset-password', (0, validate_js_1.validateBody)(authValidators_js_1.resetPasswordSchema), authController.resetPassword);
+router.post('/google', (0, validate_js_1.validateBody)(authValidators_js_1.googleLoginSchema), authController.googleLogin);
 exports.default = router;

@@ -37,6 +37,9 @@ exports.register = register;
 exports.login = login;
 exports.logout = logout;
 exports.me = me;
+exports.forgotPassword = forgotPassword;
+exports.resetPassword = resetPassword;
+exports.googleLogin = googleLogin;
 const authService = __importStar(require("../services/authService.js"));
 async function register(req, res) {
     const { name, email, password } = req.body;
@@ -63,4 +66,31 @@ async function me(req, res) {
         return;
     }
     res.json({ success: true, user });
+}
+async function forgotPassword(req, res) {
+    const { email } = req.body;
+    await authService.requestPasswordReset(email);
+    res.json({ success: true, message: 'If an account exists, a reset link has been sent.' });
+}
+async function resetPassword(req, res) {
+    const { token, newPassword } = req.body;
+    try {
+        await authService.resetPassword(token, newPassword);
+        res.json({ success: true, message: 'Password reset successfully' });
+    }
+    catch (err) {
+        const message = err instanceof Error ? err.message : 'Invalid or expired reset link';
+        res.status(400).json({ success: false, message });
+    }
+}
+async function googleLogin(req, res) {
+    const { idToken } = req.body;
+    try {
+        const { user, token } = await authService.loginWithGoogle(idToken);
+        res.json({ success: true, user, token });
+    }
+    catch (err) {
+        const message = err instanceof Error ? err.message : 'Google sign-in failed';
+        res.status(400).json({ success: false, message });
+    }
 }

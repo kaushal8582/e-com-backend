@@ -8,6 +8,9 @@ export interface IUser extends Document {
   passwordHash: string;
   role: UserRole;
   createdAt: Date;
+  googleId?: string;
+  resetToken?: string;
+  resetTokenExpiry?: Date;
 }
 
 const userSchema = new Schema<IUser>(
@@ -17,6 +20,9 @@ const userSchema = new Schema<IUser>(
     passwordHash: { type: String, required: true },
     role: { type: String, enum: ['USER', 'ADMIN'], default: 'USER' },
     createdAt: { type: Date, default: Date.now },
+    googleId: { type: String, sparse: true },
+    resetToken: { type: String },
+    resetTokenExpiry: { type: Date },
   },
   { timestamps: false, versionKey: false }
 );
